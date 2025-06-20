@@ -76,6 +76,40 @@ aside {
     background-color: #f4f4f4;
 }
 
+/* Слой затемнения всей страницы */
+#loader-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Анимация спиннера */
+.loader-spinner {
+  width: 48px;
+  height: 48px;
+  border: 5px solid #cbd5e1;
+  border-top: 5px solid #2563eb;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Скрываем scroll до загрузки */
+html.loading,
+body.loading {
+  overflow: hidden;
+}
+
+
 .products {
     flex: 1 1 auto;
     min-width: 0;

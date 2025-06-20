@@ -7,47 +7,60 @@ export function setupFilterListeners(products) {
   const maxInput = document.getElementById('max-price');
   const sortBy = document.getElementById('sort-by');
 
-  function filterAndSortProducts() {
-    const selectedCategories = Array.from(document.querySelectorAll('#category-filters input[type="checkbox"]:checked')).map(input => input.value);
-    const minPrice = parseInt(minInput.value) || 0;
-    const maxPrice = parseInt(maxInput.value) || 3000;
+  if (!categoryFilters || !priceSlider || !minInput || !maxInput || !sortBy) return;
 
-    let filtered = products.filter(product =>
-      (selectedCategories.length === 0 || selectedCategories.includes(product.category)) &&
-      product.price >= minPrice &&
-      product.price <= maxPrice
-    );
+  const getSelectedCategories = () =>
+    Array.from(categoryFilters.querySelectorAll('input[type="checkbox"]:checked'))
+      .map(input => input.value);
 
-    filtered.sort((a, b) => {
-      if (sortBy.value === 'price-asc') return a.price - b.price;
-      if (sortBy.value === 'price-down') return b.price - a.price;
-      if (sortBy.value === 'rating') return b.rating - a.rating;
-      if (sortBy.value === 'name') return a.name.localeCompare(b.name);
-      return 0;
-    });
+  const getMinPrice = () => Math.max(0, parseInt(minInput.value) || 0);
+  const getMaxPrice = () => Math.min(3000, parseInt(maxInput.value) || 3000);
+
+  const filterAndSortProducts = () => {
+    const selectedCategories = getSelectedCategories();
+    const minPrice = getMinPrice();
+    const maxPrice = getMaxPrice();
+
+    const filtered = products
+      .filter(product =>
+        (selectedCategories.length === 0 || selectedCategories.includes(product.category)) &&
+        product.price >= minPrice &&
+        product.price <= maxPrice
+      )
+      .sort((a, b) => {
+        switch (sortBy.value) {
+          case 'price-asc': return a.price - b.price;
+          case 'price-down': return b.price - a.price;
+          case 'rating': return b.rating - a.rating;
+          case 'name': return a.name.localeCompare(b.name);
+          default: return 0;
+        }
+      });
 
     displayProducts(filtered, false);
-  }
+  };
 
-  // Sync range to max input
   priceSlider.addEventListener('input', () => {
     maxInput.value = priceSlider.value;
     filterAndSortProducts();
   });
 
-  // Sync input changes to filtering
   minInput.addEventListener('input', () => {
-    if (parseInt(minInput.value) > parseInt(maxInput.value)) {
-      minInput.value = maxInput.value;
+    const minVal = getMinPrice();
+    const maxVal = getMaxPrice();
+    if (minVal > maxVal) {
+      minInput.value = maxVal;
     }
     filterAndSortProducts();
   });
 
   maxInput.addEventListener('input', () => {
-    priceSlider.value = maxInput.value;
-    if (parseInt(maxInput.value) < parseInt(minInput.value)) {
-      maxInput.value = minInput.value;
+    const minVal = getMinPrice();
+    const maxVal = getMaxPrice();
+    if (maxVal < minVal) {
+      maxInput.value = minVal;
     }
+    priceSlider.value = maxInput.value;
     filterAndSortProducts();
   });
 
