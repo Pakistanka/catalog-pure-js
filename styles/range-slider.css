@@ -74,3 +74,19 @@
   border-radius: 12px;
   white-space: nowrap;
 }
+
+.range-inputs {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.range-inputs input[type="number"] {
+  width: 80px;
+  padding: 6px;
+  font-size: 14px;
+  border: 1px solid var(--border-light, #ccc);
+  border-radius: 6px;
+}
+

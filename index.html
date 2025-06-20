@@ -26,10 +26,16 @@
             <div class="filter-section">
                 <h3>Ценовой диапазон</h3>
                 <div class="price-range-wrapper">
+                    <div class="range-inputs">
+                        <input type="number" id="min-price" min="0" max="3000" value="0" />
+                        <span>—</span>
+                        <input type="number" id="max-price" min="0" max="3000" value="3000" />
+                    </div>
                     <input type="range" class="price-range" id="price-range" min="0" max="3000" value="3000" />
-                    <div id="price-range-value" class="price-range-value">0 - 3000</div>
+
                 </div>
             </div>
+
 
         </aside>
         <section class="products">

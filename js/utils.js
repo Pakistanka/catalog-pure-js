@@ -25,26 +25,47 @@ export function setupLazyLoading() {
 
 
 export function setupPriceRange() {
-  const priceRange = document.getElementById('price-range');
-  const priceRangeValue = document.getElementById('price-range-value');
+  const range = document.getElementById('price-range');
+  const minInput = document.getElementById('min-price');
+  const maxInput = document.getElementById('max-price');
 
-  if (!priceRange || !priceRangeValue) return;
+  if (!range || !minInput || !maxInput) return;
 
-  function updateRangeBackground(value, max) {
-    const percentage = (value / max) * 100;
-    priceRange.style.background = `linear-gradient(90deg, #3b82f6 ${percentage}%, #d1d5db ${percentage}%)`;
+  const min = parseInt(range.min);
+  const max = parseInt(range.max);
+
+  function updateRangeBackground(value) {
+    const percent = ((value - min) / (max - min)) * 100;
+    range.style.background = `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${percent}%, #d1d5db ${percent}%, #d1d5db 100%)`;
   }
 
-  function updatePriceValue(value) {
-    priceRangeValue.textContent = `0 - ${value}`;
-  }
-
-  priceRange.addEventListener('input', () => {
-    updateRangeBackground(priceRange.value, priceRange.max);
-    updatePriceValue(priceRange.value);
+  range.addEventListener('input', () => {
+    const value = parseInt(range.value);
+    maxInput.value = value;
+    updateRangeBackground(value);
   });
 
-  updateRangeBackground(priceRange.value, priceRange.max);
-  updatePriceValue(priceRange.value);
+  minInput.addEventListener('input', () => {
+    let minValue = parseInt(minInput.value) || 0;
+    let maxValue = parseInt(maxInput.value) || max;
+    if (minValue > maxValue) {
+      minInput.value = maxValue;
+    }
+  });
+
+  maxInput.addEventListener('input', () => {
+    let maxValue = parseInt(maxInput.value) || max;
+    let minValue = parseInt(minInput.value) || 0;
+
+    if (maxValue < minValue) {
+      maxInput.value = minValue;
+    }
+
+    range.value = maxInput.value;
+    updateRangeBackground(range.value);
+  });
+
+  updateRangeBackground(range.value);
 }
+
 
